@@ -29,10 +29,19 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            buildConfigField("String", "BASE_URL", "\"https://jsonplaceholder.typicode.com\"")
+        }
+
+        debug {
+            // for the sake of your faster deployment i added the url directly otherwise
+            // i would have it in local.properties file and read it from there
+            buildConfigField("String", "BASE_URL", "\"https://jsonplaceholder.typicode.com\"")
         }
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
