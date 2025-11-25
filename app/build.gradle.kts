@@ -2,6 +2,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.hilt.android)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.android.junit5)
 }
 
 android {
@@ -27,13 +31,6 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
     buildFeatures {
         compose = true
     }
@@ -56,4 +53,49 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+
+    // Hilt for Dependency Injection
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    androidTestImplementation(libs.hilt.android.testing)
+
+    // CoroutinesTest for testing asynchronous programming
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    // MockK for mocking in tests
+    testImplementation(libs.mockk)
+
+    // AssertK for fluent assertions in tests
+    testImplementation(libs.assertk)
+
+    // Kotlinx Serialization for JSON
+    implementation(libs.kotlinx.serialization.json)
+
+    // Turbine for testing Kotlin Flows
+    testImplementation(libs.turbine)
+
+    // Room for local database
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    testImplementation(libs.androidx.room.testing)
+
+    // Navigation for Jetpack Compose Navigation Component
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
+
+    // Retrofit & OkHttp for networking
+    implementation(libs.retrofit)
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
+
+    //Moshi for JSON parsing & Converter for Retrofit
+    implementation(libs.moshi)
+    implementation(libs.converter.moshi)
+    implementation(libs.moshi.kotlin)
+    ksp(libs.moshi.kotlin.codegen)
+
+}
+kotlin {
+    jvmToolchain(21)
 }
