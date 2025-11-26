@@ -86,6 +86,7 @@ dependencies {
 
     // Room for local database
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.paging)
     ksp(libs.androidx.room.compiler)
     testImplementation(libs.androidx.room.testing)
 

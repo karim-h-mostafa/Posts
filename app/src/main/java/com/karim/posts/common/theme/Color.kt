@@ -1,4 +1,4 @@
-package com.karim.posts.core.ui.theme
+package com.karim.posts.common.theme
 
 import androidx.compose.ui.graphics.Color
 

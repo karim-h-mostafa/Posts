@@ -2,7 +2,7 @@ package com.karim.posts.di
 
 import android.util.Log
 import com.karim.posts.BuildConfig
-import com.karim.posts.core.utils.Constants
+import com.karim.posts.common.Constants
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides

@@ -1,4 +1,4 @@
-package com.karim.posts.core.ui.theme
+package com.karim.posts.common.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
