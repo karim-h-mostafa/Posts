@@ -3,6 +3,7 @@ package com.karim.posts.di
 import android.util.Log
 import com.karim.posts.BuildConfig
 import com.karim.posts.common.Constants
+import com.karim.posts.data.remote.service.PostApi
 import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
@@ -14,6 +15,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
+import kotlin.jvm.java
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -30,7 +32,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideHeadersInterceptor() : Interceptor = Interceptor { chain ->
+    fun provideHeadersInterceptor(): Interceptor = Interceptor { chain ->
         val request = chain.request().newBuilder().addHeader("Accept", "application/json")
             .addHeader("Content-Type", "application/json").build()
         chain.proceed(request)
@@ -40,7 +42,7 @@ object NetworkModule {
     @Singleton
     fun provideOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor, headersInterceptor: Interceptor
-    ) : OkHttpClient = OkHttpClient.Builder().apply {
+    ): OkHttpClient = OkHttpClient.Builder().apply {
         if (BuildConfig.DEBUG) {
             addInterceptor(loggingInterceptor)
         }
@@ -61,4 +63,8 @@ object NetworkModule {
     ).client(okHttpClient).addConverterFactory(
         MoshiConverterFactory.create(moshi)
     ).build()
+
+    @Provides
+    @Singleton
+    fun providePostApi(retrofit: Retrofit) = retrofit.create(PostApi::class.java)
 }

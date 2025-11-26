@@ -30,13 +30,13 @@ android {
                 "proguard-rules.pro"
             )
 
-            buildConfigField("String", "BASE_URL", "\"https://jsonplaceholder.typicode.com\"")
+            buildConfigField("String", "BASE_URL", "\"https://jsonplaceholder.typicode.com/\"")
         }
 
         debug {
             // for the sake of your faster deployment i added the url directly otherwise
             // i would have it in local.properties file and read it from there
-            buildConfigField("String", "BASE_URL", "\"https://jsonplaceholder.typicode.com\"")
+            buildConfigField("String", "BASE_URL", "\"https://jsonplaceholder.typicode.com/\"")
         }
     }
     buildFeatures {
@@ -108,4 +108,13 @@ dependencies {
 }
 kotlin {
     jvmToolchain(21)
+    compilerOptions {
+        /**
+         * Enables default property annotation targeting.
+         * This is required for annotation processors like Moshi to correctly recognize annotations like
+         * @sample @Json(name = "url") val imageUrl: String,
+         * @see  com.karim.posts.data.remote.model.PostDTO
+         * */
+        freeCompilerArgs = listOf("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode")
+    }
 }
