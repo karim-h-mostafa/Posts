@@ -105,6 +105,13 @@ dependencies {
     implementation(libs.moshi.kotlin)
     ksp(libs.moshi.kotlin.codegen)
 
+    // Coil for Image Loading
+    implementation(libs.coil.compose)
+
+    // Paging for pagination
+    implementation(libs.paging.runtime)
+    implementation(libs.paging.compose)
+
 }
 kotlin {
     jvmToolchain(21)

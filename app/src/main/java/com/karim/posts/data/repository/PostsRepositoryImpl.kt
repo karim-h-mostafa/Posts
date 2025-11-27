@@ -7,7 +7,6 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.karim.posts.common.Result
 import com.karim.posts.data.datasource.PostsLocalDataSource
-import com.karim.posts.data.datasource.PostsRemoteDataSource
 import com.karim.posts.data.mapper.toPost
 import com.karim.posts.data.paging.PostRemoteMediator
 import com.karim.posts.domain.model.Post
@@ -19,23 +18,25 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class PostsRepositoryImpl @Inject constructor(
-    private val remotePosts: PostsRemoteDataSource,
     private val localPosts: PostsLocalDataSource,
     private val postRemoteMediator: PostRemoteMediator
 ) : PostsRepository {
     @OptIn(ExperimentalPagingApi::class)
-    override fun getPosts(): Flow<PagingData<Post>> {
-        return Pager(
-            config = PagingConfig(pageSize = 10, enablePlaceholders = true),
-            remoteMediator = postRemoteMediator,
-            pagingSourceFactory = { localPosts.getPosts() }
-        ).flow.map { pagingData ->
-            pagingData.map { it.toPost() }
-        }
+    override fun getPosts() : Flow<PagingData<Post>> = Pager(
+        config = PagingConfig(
+            pageSize = 20,
+            prefetchDistance = 5,
+            enablePlaceholders = false,
+        ),
+        remoteMediator = postRemoteMediator,
+        pagingSourceFactory = { localPosts.getPosts() }
+    ).flow.map { pagingData ->
+        pagingData.map { it.toPost() }
     }
 
 
     override suspend fun getPostDetails(id: Int): Result<Post> = withContext(Dispatchers.IO) {
+        Result.Loading
         try {
             val post = localPosts.getPostDetails(id)
             if (post != null) {
