@@ -13,7 +13,6 @@ composeBom = "2025.11.01"
 
 hilt = "2.57.2"
 ksp = "2.2.10-2.0.2"
-junit5Plugin = "1.14.0.0"
 coroutinesTest = "1.10.2"
 mockk = "1.14.6"
 assertk = "0.28.1"
@@ -69,7 +68,8 @@ moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-code
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
 paging-compose = { group = "androidx.paging", name = "paging-compose", version.ref = "paging" }
-
+androidx-paging-testing = { group = "androidx.paging", name = "paging-testing", version.ref = "paging" }
+core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "coreKtx" }
 
 
 [plugins]
@@ -81,5 +81,4 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-android-junit5 = { id = "de.mannodermaus.android-junit5", version.ref = "junit5Plugin" }
 

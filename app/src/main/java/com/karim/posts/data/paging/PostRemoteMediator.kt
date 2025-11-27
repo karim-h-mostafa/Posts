@@ -1,12 +1,10 @@
 package com.karim.posts.data.paging
 
-import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-import com.karim.posts.common.Constants
 import com.karim.posts.data.datasource.PostsRemoteDataSource
 import com.karim.posts.data.local.PostsRoomDB
 import com.karim.posts.data.local.entity.PostEntity
