@@ -2,13 +2,19 @@ package com.karim.posts.presentation.feature.postdetails
 
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
-import com.karim.posts.common.Result
 import com.karim.posts.domain.model.Post
 import com.karim.posts.domain.usecase.GetPostDetailsUseCase
+import com.karim.posts.common.Result
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
@@ -16,57 +22,56 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@OptIn(ExperimentalCoroutinesApi::class)
+@RunWith(RobolectricTestRunner::class)
 class PostDetailsViewModelTest {
 
     private lateinit var getPostDetailsUseCase: GetPostDetailsUseCase
     private lateinit var savedStateHandle: SavedStateHandle
     private lateinit var viewModel: PostDetailsViewModel
+    private val testDispatcher = StandardTestDispatcher()
 
     @Before
     fun setup() {
+        Dispatchers.setMain(testDispatcher)
         getPostDetailsUseCase = mockk()
     }
 
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
+
     private fun createSavedStateHandleWithPostId(postId: Int): SavedStateHandle {
-        // Create a SavedStateHandle with route arguments
-        // Note: toRoute() in ViewModel init requires proper navigation setup
-        // For unit tests, we use SavedStateHandle with the id parameter
-        // The actual toRoute() call may fail in unit tests, but we test StateFlow behavior
-        val savedStateHandle = SavedStateHandle(mapOf("id" to postId))
-        return savedStateHandle
+        // The key format must match what toRoute() expects
+        // For Navigation Compose with type safety, it typically stores under specific keys
+        return SavedStateHandle().apply {
+            set("id", postId)
+        }
     }
 
     @Test
-    fun `initial state should have default values and transition to loading`() = runTest {
+    fun `initial state should load post successfully`() = runTest {
         // Given
         val postId = 1
+        val expectedPost = createTestPost(postId)
         savedStateHandle = createSavedStateHandleWithPostId(postId)
-        coEvery { getPostDetailsUseCase(postId) } coAnswers {
-            kotlinx.coroutines.delay(100)
-            Result.Success(createTestPost(postId))
-        }
+        coEvery { getPostDetailsUseCase(postId) } returns Result.Success(expectedPost)
 
         // When
         viewModel = PostDetailsViewModel(getPostDetailsUseCase, savedStateHandle)
+        testDispatcher.scheduler.advanceUntilIdle()
 
-        // Then - Test StateFlow emissions with Turbine
+        // Then
         viewModel.state.test {
-            // First emission: initial state with id set
-            val initialState = awaitItem()
-            assertEquals(postId, initialState.id)
-            assertNull(initialState.post)
-            assertTrue(initialState.isLoading)
-            assertNull(initialState.errorMessage)
-            
-            // Second emission: after loading completes
-            val loadedState = awaitItem()
-            assertEquals(postId, loadedState.id)
-            assertNotNull(loadedState.post)
-            assertFalse(loadedState.isLoading)
-            assertNull(loadedState.errorMessage)
-            
-            cancelAndIgnoreRemainingEvents()
+            val state = awaitItem()
+            assertEquals(postId, state.id)
+            assertEquals(expectedPost, state.post)
+            assertFalse(state.isLoading)
+            assertNull(state.errorMessage)
         }
     }
 
@@ -80,23 +85,18 @@ class PostDetailsViewModelTest {
 
         // When
         viewModel = PostDetailsViewModel(getPostDetailsUseCase, savedStateHandle)
+        testDispatcher.scheduler.advanceUntilIdle()
 
-        // Then - Test complete state flow: initial -> loading -> success
+        // Then
         viewModel.state.test {
-            // First: Initial state with id
-            val initialState = awaitItem()
-            assertEquals(postId, initialState.id)
-            assertTrue(initialState.isLoading)
-            
-            // Second: Success state
             val successState = awaitItem()
             assertEquals(expectedPost, successState.post)
             assertEquals(postId, successState.id)
             assertFalse(successState.isLoading)
             assertNull(successState.errorMessage)
-            
-            cancelAndIgnoreRemainingEvents()
         }
+
+        coVerify(exactly = 1) { getPostDetailsUseCase(postId) }
     }
 
     @Test
@@ -110,22 +110,35 @@ class PostDetailsViewModelTest {
 
         // When
         viewModel = PostDetailsViewModel(getPostDetailsUseCase, savedStateHandle)
+        testDispatcher.scheduler.advanceUntilIdle()
 
-        // Then - Test complete state flow: initial -> loading -> error
+        // Then
         viewModel.state.test {
-            // First: Initial state with id and loading
-            val initialState = awaitItem()
-            assertEquals(postId, initialState.id)
-            assertTrue(initialState.isLoading)
-            
-            // Second: Error state
             val errorState = awaitItem()
             assertEquals(postId, errorState.id)
             assertNull(errorState.post)
             assertFalse(errorState.isLoading)
             assertEquals(errorMessage, errorState.errorMessage)
-            
-            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `getPostDetails should handle loading state`() = runTest {
+        // Given
+        val postId = 1
+        savedStateHandle = createSavedStateHandleWithPostId(postId)
+        coEvery { getPostDetailsUseCase(postId) } returns Result.Loading
+
+        // When
+        viewModel = PostDetailsViewModel(getPostDetailsUseCase, savedStateHandle)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then
+        viewModel.state.test {
+            val loadingState = awaitItem()
+            assertEquals(postId, loadingState.id)
+            assertTrue(loadingState.isLoading)
+            assertNull(loadingState.errorMessage)
         }
     }
 
@@ -137,34 +150,21 @@ class PostDetailsViewModelTest {
         savedStateHandle = createSavedStateHandleWithPostId(postId)
         coEvery { getPostDetailsUseCase(postId) } returns Result.Success(expectedPost)
 
-        // When
         viewModel = PostDetailsViewModel(getPostDetailsUseCase, savedStateHandle)
-        
-        // Wait for initial load
-        viewModel.state.test {
-            awaitItem() // initial state
-            awaitItem() // loaded state
-            cancelAndIgnoreRemainingEvents()
-        }
-        
-        // Trigger retry
-        viewModel.postIntent(PostDetailsIntent.Retry)
+        testDispatcher.scheduler.advanceUntilIdle()
 
-        // Then - Verify state transitions during retry
+        // When - Trigger retry
+        viewModel.postIntent(PostDetailsIntent.Retry)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then
+        coVerify(exactly = 2) { getPostDetailsUseCase(postId) }
+
         viewModel.state.test {
-            // Should transition to loading again
-            val loadingState = awaitItem()
-            assertTrue(loadingState.isLoading)
-            
-            // Then back to success
-            val successState = awaitItem()
-            assertEquals(expectedPost, successState.post)
-            assertFalse(successState.isLoading)
-            
-            cancelAndIgnoreRemainingEvents()
+            val state = awaitItem()
+            assertEquals(expectedPost, state.post)
+            assertFalse(state.isLoading)
         }
-        
-        io.mockk.coVerify(atLeast = 2) { getPostDetailsUseCase(postId) }
     }
 
     @Test
@@ -174,16 +174,56 @@ class PostDetailsViewModelTest {
         savedStateHandle = createSavedStateHandleWithPostId(postId)
         coEvery { getPostDetailsUseCase(postId) } returns Result.Success(createTestPost(postId))
 
-        // When
         viewModel = PostDetailsViewModel(getPostDetailsUseCase, savedStateHandle)
-        viewModel.postIntent(PostDetailsIntent.ClickBack)
+        testDispatcher.scheduler.advanceUntilIdle()
 
-        // Then
+
+
+        // When & Then
         viewModel.effect.test {
+            viewModel.postIntent(PostDetailsIntent.ClickBack)
             val effect = awaitItem()
             assertEquals(PostDetailsEffect.NavigateBack, effect)
-            cancelAndIgnoreRemainingEvents()
         }
+    }
+
+    @Test
+    fun `retry after error should update state successfully`() = runTest {
+        // Given
+        val postId = 1
+        val expectedPost = createTestPost(postId)
+        val exception = Exception("Network error")
+        savedStateHandle = createSavedStateHandleWithPostId(postId)
+
+        // First call returns error, second call returns success
+        coEvery { getPostDetailsUseCase(postId) } returnsMany listOf(
+            Result.Error(exception),
+            Result.Success(expectedPost)
+        )
+
+        viewModel = PostDetailsViewModel(getPostDetailsUseCase, savedStateHandle)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Verify error state first
+        viewModel.state.test {
+            val errorState = awaitItem()
+            assertNotNull(errorState.errorMessage)
+            expectNoEvents()
+        }
+
+        // When - Retry
+        viewModel.postIntent(PostDetailsIntent.Retry)
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Then - Should have success state
+        viewModel.state.test {
+            val successState = awaitItem()
+            assertEquals(expectedPost, successState.post)
+            assertFalse(successState.isLoading)
+            assertNull(successState.errorMessage)
+        }
+
+        coVerify(exactly = 2) { getPostDetailsUseCase(postId) }
     }
 
     private fun createTestPost(id: Int) = Post(
@@ -192,4 +232,3 @@ class PostDetailsViewModelTest {
         imageUrl = "https://example.com/image$id.jpg"
     )
 }
-

@@ -1,6 +1,7 @@
 package com.karim.posts.domain.usecase
 
 import androidx.paging.PagingData
+import app.cash.turbine.test
 import com.karim.posts.domain.model.Post
 import com.karim.posts.domain.repository.PostsRepository
 import io.mockk.every
@@ -29,12 +30,10 @@ class GetPostsUseCaseTest {
         val expectedPagingData = PagingData.empty<Post>()
         every { repository.getPosts() } returns flowOf(expectedPagingData)
 
-        // When
-        val result = useCase()
-
-        // Then
-        result.collect { pagingData ->
-            assertEquals(expectedPagingData, pagingData)
+        // When + Then
+        useCase().test {
+            assertEquals(expectedPagingData, awaitItem())
+            awaitComplete()
         }
     }
 
@@ -45,10 +44,12 @@ class GetPostsUseCaseTest {
         every { repository.getPosts() } returns flowOf(expectedPagingData)
 
         // When
-        useCase().collect { }
+        useCase().test {
+            awaitItem()
+            awaitComplete()
+        }
 
         // Then
         verify(exactly = 1) { repository.getPosts() }
     }
 }
-

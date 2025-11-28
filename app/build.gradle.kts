@@ -43,6 +43,12 @@ android {
         compose = true
         buildConfig = true
     }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
+
 }
 
 dependencies {
@@ -83,6 +89,8 @@ dependencies {
 
     // Turbine for testing Kotlin Flows
     testImplementation(libs.turbine)
+    //Robolectric for testing Android APIs
+    testImplementation(libs.robolectric)
 
     // Room for local database
     implementation(libs.androidx.room.runtime)
@@ -111,6 +119,8 @@ dependencies {
     // Paging for pagination
     implementation(libs.paging.runtime)
     implementation(libs.paging.compose)
+    //Paging test
+    testImplementation(libs.androidx.paging.testing)
 
 }
 kotlin {

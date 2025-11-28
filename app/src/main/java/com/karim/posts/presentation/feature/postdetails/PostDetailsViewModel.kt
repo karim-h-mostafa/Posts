@@ -57,7 +57,7 @@ class PostDetailsViewModel @Inject constructor(
             }
 
             is Result.Success -> {
-                updateState { copy(post = postDetailsResult.data, isLoading = false) }
+                updateState { copy(post = postDetailsResult.data, isLoading = false, errorMessage = null) }
             }
         }
     }
