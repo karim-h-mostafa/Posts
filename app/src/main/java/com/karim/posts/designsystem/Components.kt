@@ -1,4 +1,4 @@
-package com.karim.posts.common.designsystem
+package com.karim.posts.designsystem
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box

@@ -29,8 +29,8 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.karim.posts.R
 import com.karim.posts.common.Constants
-import com.karim.posts.common.designsystem.ErrorMessage
-import com.karim.posts.common.designsystem.shimmerEffect
+import com.karim.posts.designsystem.ErrorMessage
+import com.karim.posts.designsystem.shimmerEffect
 import com.karim.posts.domain.model.Post
 
 @Composable
@@ -121,7 +121,6 @@ private fun PagedPostsList(
         contentPadding = PaddingValues(dimensionResource(R.dimen.spacing_medium)),
         verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.spacing_medium))
     ) {
-        Log.d(Constants.TAG, "PagedPostsList: ${posts.itemCount}")
         items(
             count = posts.itemCount,
             key = { index -> posts[index]?.id ?: index }

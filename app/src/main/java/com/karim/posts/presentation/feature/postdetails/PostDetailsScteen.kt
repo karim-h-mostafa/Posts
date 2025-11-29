@@ -25,10 +25,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.karim.posts.R
-import com.karim.posts.common.designsystem.ErrorMessage
-import com.karim.posts.common.designsystem.ImageLoader
-import com.karim.posts.common.designsystem.shimmerEffect
-import com.karim.posts.common.theme.PostsTheme
+import com.karim.posts.designsystem.ErrorMessage
+import com.karim.posts.designsystem.ImageLoader
+import com.karim.posts.designsystem.shimmerEffect
+import com.karim.posts.designsystem.theme.PostsTheme
 import com.karim.posts.domain.model.Post
 
 @Composable

@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.karim.posts.common.theme.PostsTheme
+import com.karim.posts.designsystem.theme.PostsTheme
 import com.karim.posts.presentation.navigation.PostsAppNavHost
 import dagger.hilt.android.AndroidEntryPoint
 

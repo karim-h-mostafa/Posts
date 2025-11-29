@@ -75,72 +75,7 @@ This project follows **Clean Architecture** with **MVI (Model-View-Intent)** pat
 - **Version Catalog**: Centralized dependency management
 
 ## Project Structure
-
-```
-app/src/main/java/com/karim/posts/
-├── common/                          # Shared utilities and components
-│   ├── Constants.kt                 # App-wide constants
-│   ├── Result.kt                    # Result wrapper for async operations
-│   ├── designsystem/                # Reusable UI components
-│   │   ├── Components.kt
-│   │   ├── ErrorMessage.kt
-│   │   └── SkeletonLoading.kt
-│   └── theme/                       # Material Design 3 theming
-│       ├── Color.kt
-│       ├── Theme.kt
-│       └── Type.kt
-│
-├── data/                            # Data layer
-│   ├── datasource/                  # Data source implementations
-│   │   ├── PostsLocalDataSource.kt
-│   │   ├── PostsLocalDataSourceImpl.kt
-│   │   ├── PostsRemoteDataSource.kt
-│   │   └── PostsRemoteDataSourceImpl.kt
-│   ├── local/                       # Room database
-│   │   ├── dao/PostDao.kt
-│   │   ├── entity/PostEntity.kt
-│   │   └── PostsRoomDB.kt
-│   ├── mapper/                      # Data mappers
-│   │   └── PostMapper.kt
-│   ├── paging/                      # Paging configuration
-│   │   └── PostRemoteMediator.kt
-│   ├── remote/                      # API models and services
-│   │   ├── model/PostDTO.kt
-│   │   └── service/PostApi.kt
-│   └── repository/                  # Repository implementations
-│       └── PostsRepositoryImpl.kt
-│
-├── di/                              # Dependency Injection modules
-│   ├── DatabaseModule.kt
-│   ├── NetworkModule.kt
-│   └── RepositoryModule.kt
-│
-├── domain/                          # Domain layer (business logic)
-│   ├── model/Post.kt                # Domain models
-│   ├── repository/                  # Repository interfaces
-│   │   └── PostsRepository.kt
-│   └── usecase/                     # Use cases
-│       ├── GetPostDetailsUseCase.kt
-│       └── GetPostsUseCase.kt
-│
-├── presentation/                    # Presentation layer (MVI)
-│   ├── feature/                     # Feature modules
-│   │   ├── postdetails/             # Post details feature
-│   │   │   ├── PostDetailsContract.kt  # MVI: State, Intent, Effect
-│   │   │   ├── PostDetailsScreen.kt     # View (Compose UI)
-│   │   │   └── PostDetailsViewModel.kt  # Intent processor
-│   │   └── postslist/               # Posts list feature
-│   │       ├── PostsContract.kt         # MVI: Intent, Effect
-│   │       ├── PostsListScreen.kt       # View (Compose UI)
-│   │       └── PostsListViewModel.kt    # Intent processor
-│   └── navigation/                  # Navigation setup
-│       ├── PostsAppNavHost.kt
-│       └── PostsGraph.kt
-│
-├── MainActivity.kt                   # Main entry point
-├── PostsApplication.kt               # Application class
-└── PostsAppState.kt                 # App-level state management
-```
+![Project Structure](screenshots/project_structure.png)
 
 ## Features
 
@@ -152,6 +87,22 @@ app/src/main/java/com/karim/posts/
 - **Loading States**: Skeleton loading animations for better UX
 - **Image Loading**: Efficient image loading with Coil
 - **Type-Safe Navigation**: Navigation using Kotlin serialization
+- **Crash Reporting**: Integrated Firebase Crashlytics for real-time crash monitoring
+
+## Screenshots
+
+### Posts List Screen
+![Posts List](screenshots/posts_list_screen.jpg)
+
+### Post Details Screen
+![Post Details](screenshots/post_details_screen.jpg)
+
+### Error Fetching Data
+![Error Fetching Data](screenshots/error_fetching_data.jpg)
+
+### Skeleton Loading with Shimmer Effect
+![Skeleton Loading](screenshots/skeleton_loading_with_shammer_effect.jpg)
+
 
 ### User Experience
 - Smooth scrolling with pagination
@@ -303,6 +254,13 @@ sealed class PostsEffect {
 
 ### Image Loading
 - **Coil Compose**: 2.7.0
+
+### Firebase & Google Services
+- **Google Services Plugin**: 4.4.4
+- **Firebase Crashlytics Plugin**: 3.0.6
+- **Firebase BOM**: 34.6.0
+- **Firebase Analytics**
+- **Firebase Crashlytics**
 
 See `gradle/libs.versions.toml` for the complete list of dependencies and versions.
 

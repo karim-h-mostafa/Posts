@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
 
 }
 
@@ -121,6 +123,13 @@ dependencies {
     implementation(libs.paging.compose)
     //Paging test
     testImplementation(libs.androidx.paging.testing)
+
+
+    //firebase-bom for firebase services
+    implementation(platform(libs.firebase.bom))
+    //firebase services for analytics and crashlytics
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
 
 }
 kotlin {

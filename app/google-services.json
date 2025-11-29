@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "977515230186",
+    "project_id": "gen-lang-client-0770975985",
+    "storage_bucket": "gen-lang-client-0770975985.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977515230186:android:b32fd9331e5738c531f893",
+        "android_client_info": {
+          "package_name": "com.karim.posts"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpKdcnO4z6fMI4asszM-uiOs9v8zF5K0Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

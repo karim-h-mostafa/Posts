@@ -1,4 +1,4 @@
-package com.karim.posts.common.designsystem
+package com.karim.posts.designsystem
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
@@ -12,12 +12,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.unit.IntSize
 
 fun Modifier.shimmerEffect(isLoading: Boolean = true, shape: Shape? = null): Modifier =
     if (isLoading) composed {
 
         // 1. Define the coordinates for the animation
-        var size by remember { mutableStateOf(androidx.compose.ui.unit.IntSize.Zero) }
+        var size by remember { mutableStateOf(IntSize.Zero) }
         val transition = rememberInfiniteTransition(label = "Shimmer")
 
         // 2. Animate the start position of the gradient
